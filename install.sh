@@ -25,3 +25,9 @@ while read df; do
   mkdir -p "$(dirname "$link")"
   ln -sf "$df" "$link"
 done
+
+# Install ZED
+curl -f https://zed.dev/install.sh | sh
+
+# Install ZIM
+curl -fsSL https://raw.githubusercontent.com/zimfw/install/master/install.zsh | zsh
