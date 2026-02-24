@@ -28,6 +28,3 @@ done
 
 # Install ZED
 curl -f https://zed.dev/install.sh | sh
-
-# Install ZIM
-curl -fsSL https://raw.githubusercontent.com/zimfw/install/master/install.zsh | zsh
