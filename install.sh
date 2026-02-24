@@ -31,3 +31,18 @@ curl -f https://zed.dev/install.sh | sh
 
 # Install dd-gopls
 update-tool dd-gopls
+
+# Configure git
+git config --global core.fsmonitor true
+git config --global feature.manyFiles true
+git config --global index.threads true
+
+for repo in web-ui dd-source; do
+  # Configure $repo
+  cd $HOME/go/src/github.com/DataDog/$repo
+
+  git maintenance start
+  git update-index --index-version 4 && git update-index --really-refresh
+  git dd add-branch-prefix piotr.oles
+  git dd sync
+done
