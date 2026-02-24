@@ -28,3 +28,6 @@ done
 
 # Install ZED
 curl -f https://zed.dev/install.sh | sh
+
+# Install dd-gopls
+update-tool dd-gopls
