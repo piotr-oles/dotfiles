@@ -1,10 +1,6 @@
 [user]
     name = Piotr Oleś
     email = piotr.oles@datadoghq.com
-[commit]
- 	gpgsign = true
-[gpg]
- 	format = ssh
 
 [url "git@github.com:DataDog/"]
     insteadOf = https://github.com/DataDog/
