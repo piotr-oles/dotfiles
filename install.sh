@@ -46,3 +46,11 @@ for repo in web-ui dd-source; do
   git dd add-branch-prefix piotr.oles
   git dd sync
 done
+
+# Install and start Vibe-Kanban
+npm config set prefix /usr/local
+sudo npm install pm2@latest -g
+mkdir -p $HOME/vibe-kanban
+cd $HOME/vibe-kanban
+npm install vibe-kanban
+pm2 start "PORT=42091 HOST=127.0.0.1 node $HOME/vibe-kanban/node_modules/.bin/vibe-kanban" --name vibe-kanban
