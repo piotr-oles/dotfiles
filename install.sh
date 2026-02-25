@@ -36,6 +36,7 @@ update-tool dd-gopls
 git config --global core.fsmonitor true
 git config --global feature.manyFiles true
 git config --global index.threads true
+git config --global push.autoSetupRemote true
 
 for repo in web-ui dd-source; do
   # Configure $repo
