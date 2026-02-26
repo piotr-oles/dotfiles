@@ -74,4 +74,6 @@ for repo in web-ui dd-source; do
   git update-index --index-version 4 && git update-index --really-refresh
   git dd add-branch-prefix piotr.oles
   git dd sync
+  git config remote.origin.tagOpt --no-tags
+  git config remote.origin.prune true
 done

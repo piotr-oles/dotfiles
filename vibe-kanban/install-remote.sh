@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-INSTALL_DIR="${HOME}/vibe-kanban"
+INSTALL_DIR="${HOME}/vibe-kanban-remote"
 PORT="42092"
 
 need_cmd() {
@@ -14,13 +14,14 @@ need_cmd() {
 need_cmd git
 need_cmd docker
 need_cmd openssl
+need_cmd pnpm
 
 docker compose version >/dev/null 2>&1 || {
   echo "Docker Compose v2 is required (try upgrading Docker)." >&2
   exit 1
 }
 
-echo "This will install Vibe Kanban into: ${INSTALL_DIR}"
+echo "This will install Vibe Kanban Remote API into: ${INSTALL_DIR}"
 echo
 echo "Create a GitHub OAuth App here:"
 echo "  https://github.com/settings/developers"
