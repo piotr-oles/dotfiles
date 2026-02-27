@@ -144,7 +144,7 @@ cat > "${CONFIG_DIR}/config.json" <<EOF
   "last_app_version": "0.1.19",
   "show_release_notes": false,
   "language": "BROWSER",
-  "git_branch_prefix": "${REAL_USER:-$USER}.vk",
+  "git_branch_prefix": "${REAL_USER:-$USER}",
   "showcases": {
     "seen_features": ["projects-guide"]
   },
