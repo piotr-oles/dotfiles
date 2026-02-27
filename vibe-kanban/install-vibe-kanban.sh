@@ -146,7 +146,7 @@ cat > "${CONFIG_DIR}/config.json" <<EOF
   "language": "BROWSER",
   "git_branch_prefix": "${REAL_USER:-$USER}",
   "showcases": {
-    "seen_features": ["projects-guide"]
+    "seen_features": []
   },
   "pr_auto_description_enabled": true,
   "pr_auto_description_prompt": null,
