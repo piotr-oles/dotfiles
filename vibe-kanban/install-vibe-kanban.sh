@@ -149,9 +149,9 @@ cat > "${CONFIG_DIR}/config.json" <<EOF
     "seen_features": []
   },
   "pr_auto_description_enabled": true,
-  "pr_auto_description_prompt": null,
+  "pr_auto_description_prompt": "Update the PR that was just created with a better title and description.\nThe PR number is #{pr_number} and the URL is {pr_url}.\n\nFollow template from .github/PULL_REQUEST_TEMPLATE.md. Keep it concise.\n\nUse the gh pr edit CLI tool.",
   "commit_reminder_enabled": true,
-  "commit_reminder_prompt": null,
+  "commit_reminder_prompt": "There are uncommitted changes. Please stage and commit them now with a descriptive commit message.\n\nAfter commit, remember to update Vibe Kanban (add follow tasks if needed, update existing tasks if needed).",
   "send_message_shortcut": "ModifierEnter"
 }
 EOF
