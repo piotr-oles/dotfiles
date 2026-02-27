@@ -18,20 +18,29 @@ set -euo pipefail
 
 DOTFILES_PATH="$HOME/dotfiles"
 
+echo "=== STEP 1/4: Linking dotfiles ==="
 # Symlink dotfiles to the root within your workspace
-find $DOTFILES_PATH -type f -path "$DOTFILES_PATH/.*" |
+find $DOTFILES_PATH -type f -path "$DOTFILES_PATH/.*" -not -path "$DOTFILES_PATH/.git/*" |
 while read df; do
   link=${df/$DOTFILES_PATH/$HOME}
   mkdir -p "$(dirname "$link")"
   ln -sf "$df" "$link"
+  echo "ln -sf \"$df\" \"$link\""
 done
 
+echo
+echo "=== STEP 2/4: Installing ZED ==="
 # Install ZED
 curl -f https://zed.dev/install.sh | sh
 
+echo
+echo "=== STEP 3/4: Installing Datadog tools ==="
 # Install tools
 update-tool dd-gopls ddtool bzl git-dd rapid
 
+
+echo
+echo "=== STEP 4/4: Configuring git ==="
 # Configure git
 git config --global core.fsmonitor true
 git config --global feature.manyFiles true
@@ -39,13 +48,22 @@ git config --global index.threads true
 git config --global push.autoSetupRemote true
 
 for repo in web-ui dd-source; do
+  echo "Configuring $repo..."
+
   # Configure $repo
   cd $HOME/go/src/github.com/DataDog/$repo
 
-  git maintenance start
-  git update-index --index-version 4 && git update-index --really-refresh
-  git dd add-branch-prefix piotr.oles
-  git dd sync
   git config remote.origin.tagOpt --no-tags
   git config remote.origin.prune true
+  git maintenance start
+
+  # Run in the background
+  (git dd add-branch-prefix piotr.oles && git update-index --index-version 4 && git update-index --really-refresh && git dd sync) &> $HOME/git-sync-${repo}.log &
+
+  echo "Some processes will continue in the background."
+  echo "Run \"tail $HOME/git-sync-${repo}.log\" for logs."
+  echo
 done
+
+echo
+echo "=== DONE ==="
