@@ -1,7 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+if [ $# -ne 1 ]; then
+  echo "Usage: $0 <workspace-name>"
+  exit 1
+fi
+
+name="$1"
+
 INSTALL_DIR="${HOME}/vibe-kanban"
+CONFIG_DIR="${HOME}/.local/share/vibe-kanban"
 PORT="42091"
 
 echo "This will install Vibe Kanban into ${INSTALL_DIR}"
@@ -99,6 +107,54 @@ tail -f "${LOG_FILE}"
 EOF
 
 chmod +x "${INSTALL_DIR}/start.sh" "${INSTALL_DIR}/stop.sh" "${INSTALL_DIR}/logs.sh"
+
+# Create configuration
+mkdir -p "${CONFIG_DIR}"
+cat > "${CONFIG_DIR}/config.json" <<EOF
+{
+  "config_version": "v8",
+  "theme": "SYSTEM",
+  "executor_profile": {
+    "executor": "CLAUDE_CODE"
+  },
+  "disclaimer_acknowledged": false,
+  "onboarding_acknowledged": false,
+  "remote_onboarding_acknowledged": false,
+  "notifications": {
+    "sound_enabled": true,
+    "push_enabled": true,
+    "sound_file": "PHONE_VIBRATION"
+  },
+  "editor": {
+    "editor_type": "CURSOR",
+    "custom_command": null,
+    "remote_ssh_host": "workspace-${name}",
+    "remote_ssh_user": null,
+    "auto_install_extension": true
+  },
+  "github": {
+    "pat": null,
+    "oauth_token": null,
+    "username": null,
+    "primary_email": null,
+    "default_pr_base": "main"
+  },
+  "analytics_enabled": false,
+  "workspace_dir": "${DATADOG_ROOT}",
+  "last_app_version": "0.1.19",
+  "show_release_notes": false,
+  "language": "BROWSER",
+  "git_branch_prefix": "${REAL_USER:-$USER}.vk",
+  "showcases": {
+    "seen_features": ["projects-guide"]
+  },
+  "pr_auto_description_enabled": true,
+  "pr_auto_description_prompt": null,
+  "commit_reminder_enabled": true,
+  "commit_reminder_prompt": null,
+  "send_message_shortcut": "ModifierEnter"
+}
+EOF
 
 echo
 echo "Installation complete."

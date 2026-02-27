@@ -32,7 +32,7 @@ echo
 echo "=== Step 2/3: Install Vibe Kanban on workspace ==="
 scp "${SCRIPT_DIR}/install-vibe-kanban.sh" "workspace-${name}:~/install-vibe-kanban.sh"
 echo
-ssh -t "workspace-${name}" 'bash ~/install-vibe-kanban.sh && rm ~/install-vibe-kanban.sh && ~/vibe-kanban/start.sh'
+ssh -t "workspace-${name}" "bash ~/install-vibe-kanban.sh ${name} && rm ~/install-vibe-kanban.sh && ~/vibe-kanban/start.sh"
 
 echo
 echo "=== Step 3/3: Forward SSH ports ==="
