@@ -1,18 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# install-local.sh
-# Installs vibe-kanban locally using npx and creates:
-#   - start.sh (runs in background)
-#   - stop.sh
-#   - logs.sh
-#
-# Local UI port: 42091
-# Backend port: 42092
-
-INSTALL_DIR="${HOME}/vibe-kanban-local"
-LOCAL_UI_PORT="42091"
+INSTALL_DIR="${HOME}/vibe-kanban-worker"
+PORT="42091"
 BACKEND_PORT="42092"
+
+echo "This will install Vibe Kanban Worker into ${INSTALL_DIR}"
+echo
 
 need_cmd() {
   command -v "$1" >/dev/null 2>&1 || {
@@ -22,7 +16,7 @@ need_cmd() {
 }
 
 need_cmd node
-need_cmd pnpm
+need_cmd npm
 
 mkdir -p "${INSTALL_DIR}"
 cd "${INSTALL_DIR}"
@@ -35,13 +29,12 @@ set -euo pipefail
 ROOT_DIR="\$(cd "\$(dirname "\${BASH_SOURCE[0]}")" && pwd)"
 PID_FILE="\${ROOT_DIR}/.vibe-kanban.pid"
 LOG_FILE="\${ROOT_DIR}/vibe-kanban.log"
-
-LOCAL_UI_PORT="\${LOCAL_UI_PORT:-${LOCAL_UI_PORT}}"
-BACKEND_PORT="\${BACKEND_PORT:-${BACKEND_PORT}}"
+PORT=${PORT}
+BACKEND_PORT=${BACKEND_PORT}
 
 if [[ -f "\${PID_FILE}" ]] && kill -0 "\$(cat "\${PID_FILE}")" 2>/dev/null; then
-  echo "vibe-kanban already running (pid \$(cat "\${PID_FILE}"))."
-  echo "Open: http://localhost:\${LOCAL_UI_PORT}"
+  echo "Vibe Kanban Worker already running (pid \$(cat "\${PID_FILE}"))."
+  echo "Open: http://localhost:\${PORT}"
   exit 0
 fi
 
@@ -49,14 +42,19 @@ rm -f "\${PID_FILE}"
 
 cd "\${ROOT_DIR}"
 
+if lsof -nP -iTCP:"\${PORT}" -sTCP:LISTEN >/dev/null 2>&1; then
+  echo "Error: port \${PORT} is already in use:"
+  lsof -nP -iTCP:"\${PORT}" -sTCP:LISTEN
+  echo
+fi
+
 # Run via npx in background
-nohup env PORT="\${LOCAL_UI_PORT}" BACKEND_PORT="\${BACKEND_PORT}" \\
-  pnpm dlx vibe-kanban > "\${LOG_FILE}" 2>&1 &
+PORT=\${PORT} BACKEND_PORT=\${BACKEND_PORT} nohup npx vibe-kanban > "\${LOG_FILE}" 2>&1 &
 
 echo \$! > "\${PID_FILE}"
 
 echo
-echo "vibe-kanban started (detached) at: http://localhost:\${LOCAL_UI_PORT}"
+echo "Vibe Kanban Worker started (detached) at: http://localhost:\${PORT}"
 echo "Backend port set to: \${BACKEND_PORT}"
 echo "Logs: ./logs.sh"
 echo "Stop: ./stop.sh"
@@ -71,7 +69,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PID_FILE="${ROOT_DIR}/.vibe-kanban.pid"
 
 if [[ ! -f "${PID_FILE}" ]]; then
-  echo "vibe-kanban not running (no pid file)."
+  echo "Vibe Kanban Worker not running (no pid file)."
   exit 0
 fi
 
@@ -106,19 +104,9 @@ EOF
 chmod +x "${INSTALL_DIR}/start.sh" "${INSTALL_DIR}/stop.sh" "${INSTALL_DIR}/logs.sh"
 
 echo
-echo "Local install complete."
+echo "Installation complete."
 echo
-echo "To start:"
 echo "  cd ${INSTALL_DIR}"
-echo "  ./start.sh"
-echo
-echo "To stop:"
-echo "  ./stop.sh"
-echo
-echo "To view logs:"
-echo "  ./logs.sh"
-echo
-echo "Defaults:"
-echo "  Local UI port: ${LOCAL_UI_PORT}"
-echo "  Backend port:  ${BACKEND_PORT}"
-echo
+echo "    ./start.sh (to start in the background)"
+echo "    ./logs.sh  (to see logs)"
+echo "    ./stop.sh"

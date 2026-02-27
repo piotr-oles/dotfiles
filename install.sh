@@ -38,34 +38,6 @@ git config --global feature.manyFiles true
 git config --global index.threads true
 git config --global push.autoSetupRemote true
 
-# Install and start Vibe-Kanban
-mkdir -p $HOME/vibe-kanban
-cd $HOME/vibe-kanban
-npm install vibe-kanban
-cat << 'EOF' > $HOME/vibe-kanban/run.sh
-#!/usr/bin/env sh
-delay=1
-max=60
-while true; do
-  HOST=127.0.0.1 PORT=42091 node $HOME/vibe-kanban/node_modules/.bin/vibe-kanban
-  code=$?
-  echo "exit=$code" >&2
-  sleep "$delay"
-  if [ "$delay" -lt "$max" ]; then
-    delay=$(( delay * 2 ))
-    if [ "$delay" -gt "$max" ]; then
-      delay="$max"
-    fi
-  fi
-done
-EOF
-chmod +x $HOME/vibe-kanban/run.sh
-touch $HOME/vibe-kanban/log.log
-nohup $HOME/vibe-kanban/run.sh > $HOME/vibe-kanban/log.log 2>&1 &
-
-echo "Vibe-Kanban started, listening on http://127.0.0.1:42091"
-echo "You can access logs at ~/vibe-kanban/log.log"
-
 for repo in web-ui dd-source; do
   # Configure $repo
   cd $HOME/go/src/github.com/DataDog/$repo

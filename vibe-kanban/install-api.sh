@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-INSTALL_DIR="${HOME}/vibe-kanban-remote"
+INSTALL_DIR="${HOME}/vibe-kanban-api"
 PORT="42092"
+
+echo "This will install Vibe Kanban API into ${INSTALL_DIR}"
+echo
 
 need_cmd() {
   command -v "$1" >/dev/null 2>&1 || {
@@ -14,22 +17,11 @@ need_cmd() {
 need_cmd git
 need_cmd docker
 need_cmd openssl
-need_cmd pnpm
 
 docker compose version >/dev/null 2>&1 || {
   echo "Docker Compose v2 is required (try upgrading Docker)." >&2
   exit 1
 }
-
-echo "This will install Vibe Kanban Remote API into: ${INSTALL_DIR}"
-echo
-echo "Create a GitHub OAuth App here:"
-echo "  https://github.com/settings/developers"
-echo
-echo "Use these values:"
-echo "  Homepage URL:               http://localhost:${PORT}"
-echo "  Authorization callback URL: http://localhost:${PORT}/v1/oauth/github/callback"
-echo
 
 mkdir -p "${INSTALL_DIR}"
 
@@ -47,6 +39,11 @@ if [[ -f "${ENV_FILE}" ]]; then
   echo
   echo ".env.remote already exists. It will NOT be overwritten."
 else
+  echo "Create a GitHub OAuth App here: https://github.com/settings/developers"
+  echo "Use these values:"
+  echo "  Homepage URL:               http://localhost:${PORT}"
+  echo "  Authorization callback URL: http://localhost:${PORT}/v1/oauth/github/callback"
+  echo
   echo
   read -r -p "GITHUB_CLIENT_ID: " GITHUB_CLIENT_ID
   read -r -s -p "GITHUB_SECRET: " GITHUB_SECRET
@@ -90,7 +87,7 @@ docker compose \\
   up -d --build
 
 echo
-echo "Vibe Kanban is running at: http://localhost:${PORT}"
+echo "Vibe Kanban API is running at: http://localhost:${PORT}"
 echo "View logs with: ./logs.sh"
 echo "Stop with: ./stop.sh"
 EOF
@@ -107,7 +104,7 @@ docker compose \\
   down
 
 echo
-echo "Vibe Kanban has been stopped."
+echo "Vibe Kanban API has been stopped."
 EOF
 
 cat > "${INSTALL_DIR}/logs.sh" <<EOF
@@ -127,16 +124,9 @@ chmod +x "${INSTALL_DIR}/stop.sh"
 chmod +x "${INSTALL_DIR}/logs.sh"
 
 echo
-echo "Installation complete."
+echo "API Installation complete."
 echo
 echo "  cd ${INSTALL_DIR}"
-echo
-echo "Start (background): ./start.sh"
-echo "Logs: ./logs.sh"
-echo "Stop: ./stop.sh"
-echo
-echo "Open:"
-echo "  http://localhost:${PORT}"
-echo
-echo "If login fails, confirm your GitHub callback URL is:"
-echo "  http://localhost:${PORT}/v1/oauth/github/callback"
+echo "    ./start.sh (to start in the background)"
+echo "    ./logs.sh  (to see logs)"
+echo "    ./stop.sh"
