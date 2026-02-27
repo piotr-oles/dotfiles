@@ -58,10 +58,10 @@ for repo in web-ui dd-source; do
   git maintenance start
 
   # Run in the background
-  (git dd add-branch-prefix piotr.oles && git update-index --index-version 4 && git update-index --really-refresh && git dd sync) &> $HOME/logs/git-sync-${repo}.log &
+  (git dd add-branch-prefix piotr.oles && git update-index --index-version 4 && git update-index --really-refresh && git dd sync) &> $HOME/.git-sync-${repo}.log &
 
   echo "Some processes will continue in the background."
-  echo "Run \"tail $HOME/logs/git-sync-${repo}.log\" for logs."
+  echo "Run \"tail $HOME/.git-sync-${repo}.log\" for logs."
   echo
 done
 
