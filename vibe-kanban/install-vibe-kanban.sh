@@ -156,6 +156,22 @@ cat > "${CONFIG_DIR}/config.json" <<EOF
 }
 EOF
 
+# Setup MCP servers
+cat > "${HOME}/.claude.json" <<EOF
+{
+  "mcpServers": {
+    "vibe_kanban": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "vibe-kanban@latest",
+        "--mcp"
+      ]
+    }
+  }
+}
+EOF
+
 echo
 echo "Installation complete."
 echo
