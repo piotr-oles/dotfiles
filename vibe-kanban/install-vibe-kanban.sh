@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-INSTALL_DIR="${HOME}/vibe-kanban-worker"
+INSTALL_DIR="${HOME}/vibe-kanban"
 PORT="42091"
-BACKEND_PORT="42092"
 
-echo "This will install Vibe Kanban Worker into ${INSTALL_DIR}"
+echo "This will install Vibe Kanban into ${INSTALL_DIR}"
 echo
 
 need_cmd() {
@@ -21,6 +20,9 @@ need_cmd npm
 mkdir -p "${INSTALL_DIR}"
 cd "${INSTALL_DIR}"
 
+# Install package
+npm install vibe-kanban@${VERSION}
+
 # Create start.sh
 cat > "${INSTALL_DIR}/start.sh" <<EOF
 #!/usr/bin/env bash
@@ -30,7 +32,6 @@ ROOT_DIR="\$(cd "\$(dirname "\${BASH_SOURCE[0]}")" && pwd)"
 PID_FILE="\${ROOT_DIR}/.vibe-kanban.pid"
 LOG_FILE="\${ROOT_DIR}/vibe-kanban.log"
 PORT=${PORT}
-BACKEND_PORT=${BACKEND_PORT}
 
 if [[ -f "\${PID_FILE}" ]] && kill -0 "\$(cat "\${PID_FILE}")" 2>/dev/null; then
   echo "Vibe Kanban Worker already running (pid \$(cat "\${PID_FILE}"))."
@@ -48,8 +49,8 @@ if lsof -nP -iTCP:"\${PORT}" -sTCP:LISTEN >/dev/null 2>&1; then
   echo
 fi
 
-# Run via npx in background
-PORT=\${PORT} BACKEND_PORT=\${BACKEND_PORT} nohup npx vibe-kanban > "\${LOG_FILE}" 2>&1 &
+# Start server
+nohup env PORT=${PORT} node node_modules/vibe-kanban/bin/cli.js > "\${LOG_FILE}" 2>&1 &
 
 echo \$! > "\${PID_FILE}"
 

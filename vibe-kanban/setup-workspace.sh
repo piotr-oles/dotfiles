@@ -16,23 +16,23 @@ if ! command -v workspaces >/dev/null 2>&1; then
   exit 1
 fi
 
+echo "=== Step 1/3: Checking if workspace ${name} exists ==="
+
 # Check if the given workspace exists
-if ! workspaces list | grep -qw "${name}"; then
+if ! workspaces list | awk -v n="${name}" '$1 == n { found=1 } END { exit !found }'; then
   echo "Error: workspace '${name}' not found." >&2
+  echo "" >&2
+  workspaces list >&2
+  echo "" >&2
   echo "Create it with: workspaces create ${name}" >&2
   exit 1
 fi
 
-echo "=== Step 1/3: Install Vibe Kanban API on workspace ==="
-scp "${SCRIPT_DIR}/install-api.sh" "workspace-${name}:~/install-api.sh"
 echo
-ssh -t "workspace-${name}" 'bash ~/install-api.sh && rm ~/install-api.sh && ~/vibe-kanban-api/start.sh'
-
+echo "=== Step 2/3: Install Vibe Kanban on workspace ==="
+scp "${SCRIPT_DIR}/install-vibe-kanban.sh" "workspace-${name}:~/install-vibe-kanban.sh"
 echo
-echo "=== Step 2/3: Install Vibe Kanban Worker on workspace ==="
-scp "${SCRIPT_DIR}/install-worker.sh" "workspace-${name}:~/install-worker.sh"
-echo
-ssh -t "workspace-${name}" 'bash ~/install-worker.sh && rm ~/install-worker.sh && ~/vibe-kanban-worker/start.sh'
+ssh -t "workspace-${name}" 'bash ~/install-vibe-kanban.sh && rm ~/install-vibe-kanban.sh && ~/vibe-kanban/start.sh'
 
 echo
 echo "=== Step 3/3: Forward SSH ports ==="

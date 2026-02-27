@@ -31,7 +31,6 @@ check_port() {
 
 # Check ports before modifying anything
 check_port 42091
-check_port 42092
 
 add_if_missing() {
   local line="$1"
@@ -44,8 +43,7 @@ add_if_missing() {
 }
 
 add_if_missing "    LocalForward 42091 localhost:42091"
-add_if_missing "    LocalForward 42092 localhost:42092"
-# add_if_missing "    LocalForward 3000 localhost:3000"
+add_if_missing "    LocalForward 3000 localhost:3000"
 
 
 echo "Done."

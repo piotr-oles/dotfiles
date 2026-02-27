@@ -18,7 +18,7 @@ set -euo pipefail
 
 DOTFILES_PATH="$HOME/dotfiles"
 
-echo "=== STEP 1/4: Linking dotfiles ==="
+echo "=== STEP 1/5: Linking dotfiles ==="
 # Symlink dotfiles to the root within your workspace
 find $DOTFILES_PATH -type f -path "$DOTFILES_PATH/.*" -not -path "$DOTFILES_PATH/.git/*" |
 while read df; do
@@ -29,18 +29,18 @@ while read df; do
 done
 
 echo
-echo "=== STEP 2/4: Installing ZED ==="
+echo "=== STEP 2/5: Installing ZED ==="
 # Install ZED
 curl -f https://zed.dev/install.sh | sh
 
 echo
-echo "=== STEP 3/4: Installing Datadog tools ==="
+echo "=== STEP 3/5: Installing Datadog tools ==="
 # Install tools
 update-tool dd-gopls ddtool bzl git-dd rapid
 
 
 echo
-echo "=== STEP 4/4: Configuring git ==="
+echo "=== STEP 4/5: Configuring git ==="
 # Configure git
 git config --global core.fsmonitor true
 git config --global feature.manyFiles true
@@ -58,12 +58,18 @@ for repo in web-ui dd-source; do
   git maintenance start
 
   # Run in the background
-  (git dd add-branch-prefix piotr.oles && git update-index --index-version 4 && git update-index --really-refresh && git dd sync) &> $HOME/git-sync-${repo}.log &
+  (git dd add-branch-prefix piotr.oles && git update-index --index-version 4 && git update-index --really-refresh && git dd sync) &> $HOME/logs/git-sync-${repo}.log &
 
   echo "Some processes will continue in the background."
-  echo "Run \"tail $HOME/git-sync-${repo}.log\" for logs."
+  echo "Run \"tail $HOME/logs/git-sync-${repo}.log\" for logs."
   echo
 done
+
+
+echo
+echo "=== STEP 5/5: Installing vibe-kanban ==="
+./vibe-kanban/install-vibe-kanban.sh
+~/vibe-kanban/start.sh
 
 echo
 echo "=== DONE ==="
