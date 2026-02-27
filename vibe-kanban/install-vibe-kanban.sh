@@ -20,9 +20,6 @@ need_cmd npm
 mkdir -p "${INSTALL_DIR}"
 cd "${INSTALL_DIR}"
 
-# Install package
-npm install vibe-kanban@${VERSION}
-
 # Create start.sh
 cat > "${INSTALL_DIR}/start.sh" <<EOF
 #!/usr/bin/env bash
@@ -50,13 +47,12 @@ if lsof -nP -iTCP:"\${PORT}" -sTCP:LISTEN >/dev/null 2>&1; then
 fi
 
 # Start server
-nohup env PORT=${PORT} node node_modules/vibe-kanban/bin/cli.js > "\${LOG_FILE}" 2>&1 &
+nohup env PORT=\${PORT} npx vibe-kanban > "\${LOG_FILE}" 2>&1 &
 
 echo \$! > "\${PID_FILE}"
 
 echo
 echo "Vibe Kanban Worker started (detached) at: http://localhost:\${PORT}"
-echo "Backend port set to: \${BACKEND_PORT}"
 echo "Logs: ./logs.sh"
 echo "Stop: ./stop.sh"
 EOF

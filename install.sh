@@ -68,8 +68,8 @@ done
 
 echo
 echo "=== STEP 5/5: Installing vibe-kanban ==="
-./vibe-kanban/install-vibe-kanban.sh
-~/vibe-kanban/start.sh
+$DOTFILES_PATH/vibe-kanban/install-vibe-kanban.sh
+$HOME/vibe-kanban/start.sh
 
 echo
 echo "=== DONE ==="
