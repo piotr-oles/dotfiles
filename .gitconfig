@@ -1,4 +1,17 @@
 [user]
-    name = Piotr Oleś
-    email = piotrek.oles@gmail.com
+  email = piotrek.oles@gmail.com
+  name = Piotr Oleś
 
+[url "git@github.com:"]
+	insteadOf = https://github.com/
+	insteadOf = git://github.com/
+[core]
+	fsmonitor = true
+[feature]
+	manyFiles = true
+[index]
+	threads = true
+[init]
+	defaultBranch = main
+[push]
+	autoSetupRemote = true
